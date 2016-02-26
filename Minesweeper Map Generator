@@ -1,0 +1,96 @@
+package minesweeper;
+
+import java.util.Random;
+
+public class mapmaker {
+
+	private int width;
+	private int height;
+	private int mines;
+	private char[][] maze;
+	
+	public mapmaker(int height, int width, int mines) {
+		maze  = new char[height + 1][width + 1];
+		this.height = height ;
+		this.width = width ;
+		this.mines = mines;
+		clearMaze();
+		placeMines();
+		generateNum();
+		displayMaze();
+	}
+	
+	private void placeMines() {
+		int i;
+		Random ran = new Random();
+		for (i = mines; i > 0; i--) {
+			int x = ran.nextInt(width);
+			int y = ran.nextInt(height);
+			if (maze[y][x] != '*') {
+				maze[y][x] = '*';	
+			}
+			else {
+				i++;
+			}
+		}
+	}
+	
+	private void generateNum() {
+		int i,j;
+		for (i = 0; i < height; i++) {
+			for(j = 0; j < width; j++) {
+				numbers(i,j);
+			}
+		}
+	}
+
+	private void displayMaze() {
+		int i, j;
+		for (i = 0; i < height; i++) {
+			System.out.println();
+			for(j = 0; j < width; j++) {
+				System.out.print(maze[i][j]);
+				System.out.print(" ");
+			}
+		}
+	}
+	
+	private void clearMaze() {
+		int i,j;
+		for (i = 0; i < height; i++) {
+			for(j = 0; j < width; j++) {
+				maze[i][j] = ' ';
+			}
+		}
+	}
+	private void numbers(int i, int j) {
+		if (maze[i][j] != '*') {
+			if ((j > 0 && j < width) && (i > 0 && i < height)) {
+				loop(i,j,1,1);
+			}
+			else if ((j > 0 && j < width) && (i < height)) {
+				loop(i,j,0,1);
+			}
+			else if ((j < width) && (i > 0 && i < height)) {
+				loop(i,j,1,0);
+			}
+			else if ((j < width) && (i < height)) {
+				loop(i,j,0,0);
+			}
+		}
+	}
+	private void loop(int i, int j, int displacement1, int displacement2) {
+		int counter = 48,k,l;
+		for (k = i - displacement1; k < i + 2; k++) {
+			for (l = j - displacement2; l < j + 2; l++) {
+				if (maze[k][l] == '*') {
+					counter++;
+				}
+				maze[i][j] = (char) counter;
+			}
+		}
+		if (maze[i][j] == '0') {
+			maze[i][j] = ' ';
+		}
+	}
+}
